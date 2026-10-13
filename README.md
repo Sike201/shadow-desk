@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Shadow Desk
 
-## Getting Started
+AI-powered private memecoin trading desk on Solana — wallet connect, Umbra-style private balances, Shadow agent chat, and a one-click private buy flow (mocked privacy + Pump for the demo).
 
-First, run the development server:
+## Quick start
 
 ```bash
+cp .env.example .env.local
+# Prefer GOOGLE_GENERATIVE_AI_API_KEY (Gemini Flash, free)
+# or set OPENAI_API_KEY (uses gpt-4o-mini)
+
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Next.js 14 App Router + TypeScript + Tailwind
+- `@solana/wallet-adapter-react` (Phantom / Solflare)
+- `@umbra-privacy/sdk` installed — demo uses mock privacy rail (`NEXT_PUBLIC_PRIVACY_MODE=mock`)
+- Vercel AI SDK (`ai` + `@ai-sdk/react`) with Gemini Flash preferred, OpenAI mini fallback
+- React Bits `Dither` background
 
-## Learn More
+## Demo flow
 
-To learn more about Next.js, take a look at the following resources:
+1. Connect Phantom or Solflare
+2. Peek private SOL/USDC in the vault card
+3. Chat: `Buy 0.05 SOL of this mint: <mint>`
+4. Watch withdraw → fund burner → Pump buy → re-shield
+5. New position land in the private book
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Env
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Key | Notes |
+| --- | --- |
+| `GOOGLE_GENERATIVE_AI_API_KEY` | Preferred (free Gemini Flash) |
+| `OPENAI_API_KEY` | Fallback `gpt-4o-mini` only |
+| `NEXT_PUBLIC_HELIUS_RPC_URL` | Solana RPC |
+| `NEXT_PUBLIC_PRIVACY_MODE` | `mock` or `umbra` |
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Never commit `.env.local`.
