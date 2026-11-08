@@ -1,24 +1,15 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono, Syne } from "next/font/google";
-import { Toaster } from "sonner";
+import { GeistMono } from "geist/font/mono";
+import { GeistSans } from "geist/font/sans";
+import { AuroraBackground } from "@/components/AuroraBackground";
+import { PrivyConfigBanner } from "@/components/PrivyConfigBanner";
 import { WalletProvider } from "@/components/WalletProvider";
+import "@/components/polyfills";
 import "./globals.css";
 
-const display = Syne({
-  subsets: ["latin"],
-  variable: "--font-display",
-  weight: ["500", "600", "700"],
-});
-
-const mono = IBM_Plex_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-  weight: ["400", "500", "600"],
-});
-
 export const metadata: Metadata = {
-  title: "Shadow Desk",
-  description: "AI-powered private memecoin trading desk on Solana",
+  title: "Shadow Send",
+  description: "Solflare-style private send on Solana powered by Privacy Cash",
 };
 
 export default function RootLayout({
@@ -27,22 +18,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      className={`${GeistSans.variable} ${GeistMono.variable} ${GeistSans.className}`}
+      suppressHydrationWarning
+    >
       <body
-        className={`${display.variable} ${mono.variable} font-sans antialiased`}
+        className={`${GeistSans.className} relative min-h-[100dvh] bg-transparent text-zinc-100 antialiased`}
       >
+        <AuroraBackground />
         <WalletProvider>
-          {children}
-          <Toaster
-            theme="dark"
-            position="bottom-right"
-            toastOptions={{
-              classNames: {
-                toast:
-                  "border border-neon/30 bg-black/90 font-mono text-xs text-zinc-100",
-              },
-            }}
-          />
+          <div className={`${GeistSans.className} relative z-10 min-h-[100dvh]`}>
+            <PrivyConfigBanner />
+            {children}
+          </div>
         </WalletProvider>
       </body>
     </html>

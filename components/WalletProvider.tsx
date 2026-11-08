@@ -1,30 +1,17 @@
 "use client";
 
-import "./polyfills";
-import { useMemo, type ReactNode } from "react";
-import {
-  ConnectionProvider,
-  WalletProvider as SolanaWalletProvider,
-} from "@solana/wallet-adapter-react";
-import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
-import { PhantomWalletAdapter } from "@solana/wallet-adapter-phantom";
-import { SolflareWalletAdapter } from "@solana/wallet-adapter-solflare";
-import { getRpcEndpoint } from "@/lib/solana";
+import { PrivyProvider } from "@privy-io/react-auth";
+import { buildPrivyConfig } from "@/lib/privy-config";
+import { SolanaConnectionProvider } from "@/components/SolanaConnectionProvider";
+import { useMemo } from "react";
 
-import "@solana/wallet-adapter-react-ui/styles.css";
-
-export function WalletProvider({ children }: { children: ReactNode }) {
-  const endpoint = useMemo(() => getRpcEndpoint(), []);
-  const wallets = useMemo(
-    () => [new PhantomWalletAdapter(), new SolflareWalletAdapter()],
-    []
-  );
+export function WalletProvider({ children }: { children: React.ReactNode }) {
+  const appId = process.env.NEXT_PUBLIC_PRIVY_APP_ID ?? "";
+  const config = useMemo(() => buildPrivyConfig(), []);
 
   return (
-    <ConnectionProvider endpoint={endpoint}>
-      <SolanaWalletProvider wallets={wallets} autoConnect>
-        <WalletModalProvider>{children}</WalletModalProvider>
-      </SolanaWalletProvider>
-    </ConnectionProvider>
+    <PrivyProvider appId={appId} config={config}>
+      <SolanaConnectionProvider>{children}</SolanaConnectionProvider>
+    </PrivyProvider>
   );
 }

@@ -1,43 +1,59 @@
-# Shadow Desk
+# Shadow Send
 
-AI-powered private memecoin trading desk on Solana — wallet connect, Umbra-style private balances, Shadow agent chat, and a one-click private buy flow (mocked privacy + Pump for the demo).
+Minimal web app for **Private Send** on Solana — Solflare-style UX with [Privacy Cash](https://github.com/Privacy-Cash/privacy-cash) under the hood.
 
-## Quick start
+## Features
+
+- Connect wallet (Phantom, Solflare, …)
+- Send **SOL**, **USDC**, or **USDT**
+- **Private Send** (default on) via Privacy Cash deposit → withdraw
+- **Extra Mix** for stablecoins (separate deposit + timed mix + withdraw)
+- Public transfer when Private Send is off
+- Aurora gradient background (React Bits)
+
+## Setup
 
 ```bash
-cp .env.example .env.local
-# Prefer GOOGLE_GENERATIVE_AI_API_KEY (Gemini Flash, free)
-# or set OPENAI_API_KEY (uses gpt-4o-mini)
-
 npm install
+cp .env.example .env.local
+# Add Helius RPC URL + Privy App ID (and PRIVY_APP_SECRET for any server routes)
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+### Privy
 
-## Stack
+Wallet connection uses [Privy](https://privy.io) (Solana-only: external wallets + embedded wallets).
 
-- Next.js 14 App Router + TypeScript + Tailwind
-- `@solana/wallet-adapter-react` (Phantom / Solflare)
-- `@umbra-privacy/sdk` installed — demo uses mock privacy rail (`NEXT_PUBLIC_PRIVACY_MODE=mock`)
-- Vercel AI SDK (`ai` + `@ai-sdk/react`) with Gemini Flash preferred, OpenAI mini fallback
-- React Bits `Dither` background
+1. Create an app at [dashboard.privy.io](https://dashboard.privy.io).
+2. Under **Authentication**, enable **Solana wallet** login and **sign-up with external wallets** (Phantom/Solflare). If external signup is off, Privy shows *Account not found* for new wallets.
+3. Optionally enable **Email** so users can create an account without an extension wallet.
+4. Set `NEXT_PUBLIC_PRIVY_APP_ID` in `.env.local` and `PRIVY_APP_SECRET` (server-only, never commit).
+5. Run `npm run privy:verify` to confirm dashboard settings match this app.
 
-## Demo flow
+The client uses `@privy-io/react-auth` with Phantom/Solflare via `toSolanaWalletConnectors()`.
 
-1. Connect Phantom or Solflare
-2. Peek private SOL/USDC in the vault card
-3. Chat: `Buy 0.05 SOL of this mint: <mint>`
-4. Watch withdraw → fund burner → Pump buy → re-shield
-5. New position land in the private book
+### Circuit files (required for private send)
 
-## Env
+The SDK loads Groth16 artifacts from your app at:
 
-| Key | Notes |
-| --- | --- |
-| `GOOGLE_GENERATIVE_AI_API_KEY` | Preferred (free Gemini Flash) |
-| `OPENAI_API_KEY` | Fallback `gpt-4o-mini` only |
-| `NEXT_PUBLIC_HELIUS_RPC_URL` | Solana RPC |
-| `NEXT_PUBLIC_PRIVACY_MODE` | `mock` or `umbra` |
+- `public/circuit/transaction2.wasm`
+- `public/circuit/transaction2.zkey`
 
-Never commit `.env.local`.
+Download or build them from the [Privacy Cash](https://github.com/Privacy-Cash/privacy-cash) repository (see their SDK installation docs). These files are large and are not committed to this repo.
+
+### Backend
+
+Point `NEXT_PUBLIC_PRIVACY_CASH_BACKEND_URL` at a running Privacy Cash backend (default: `https://api3.privacycash.org`).
+
+## Scripts
+
+- `npm run dev` — development server
+- `npm run dev:clean` — clear `.next` and start dev (use if styles/assets 404)
+- `npm run build` — production build
+
+## Project layout
+
+- `app/page.tsx` — main send screen
+- `components/` — wallet, form, progress modal, Aurora
+- `lib/privacy-cash.ts` — Privacy Cash client + flows
+- `lib/solana.ts` — balances and public transfers

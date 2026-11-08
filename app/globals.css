@@ -3,31 +3,72 @@
 @tailwind utilities;
 
 :root {
-  --background: #050605;
-  --foreground: #e8ece8;
-  --neon: #39ff14;
-  --panel: rgba(8, 10, 9, 0.72);
+  --background: #050508;
+  --foreground: #fafafa;
+  --muted: #a1a1aa;
+}
+
+html {
+  background: #050508;
 }
 
 html,
 body {
+  height: 100%;
   min-height: 100%;
 }
 
 body {
   color: var(--foreground);
-  background: var(--background);
+  background: transparent;
+  min-height: 100dvh;
 }
 
-@layer components {
-  .panel {
-    @apply border border-white/10 bg-[var(--panel)] p-4 backdrop-blur-md;
+@layer base {
+  *,
+  *::before,
+  *::after {
+    font-family: inherit;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  span,
+  label,
+  button,
+  input,
+  textarea,
+  select,
+  a {
+    font-family: inherit;
+  }
+
+  input,
+  textarea,
+  button,
+  select {
+    font: inherit;
   }
 }
 
-/* Wallet adapter button tweaks */
-.wallet-adapter-button {
-  font-family: var(--font-mono), ui-monospace, monospace !important;
+.readable {
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.85);
+}
+
+.wallet-adapter-button,
+.wallet-adapter-modal,
+.wallet-adapter-modal-wrapper,
+.wallet-adapter-modal-container,
+.wallet-adapter-modal-title,
+.wallet-adapter-modal-list,
+.wallet-adapter-modal-list-more,
+.wallet-adapter-modal-button {
+  font-family: inherit !important;
 }
 
 .wallet-adapter-modal-wrapper {
@@ -39,7 +80,8 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(57, 255, 20, 0.25);
+  background: rgba(113, 113, 122, 0.35);
+  border-radius: 999px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
